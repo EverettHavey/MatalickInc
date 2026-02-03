@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Matalick Inc.</title>
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --paper-white: #fcfaf7;
+            --text-dark: #333;
+            --accent-tan: #e5d3b3;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--paper-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Navigation --- */
+        header {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            text-decoration: none;
+            z-index: 1100;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li { margin-left: 25px; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-green); }
+
+        .quote-btn {
+            background: var(--primary-green);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        .hamburger { display: none; cursor: pointer; z-index: 1100; }
+        .hamburger div { width: 25px; height: 2px; background-color: var(--primary-green); margin: 6px; transition: var(--transition); }
+
+        /* --- Contact Page Layout --- */
+        .contact-hero {
+            padding: 80px 5% 40px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .contact-hero h1 { font-size: 2.8rem; color: var(--primary-green); margin-bottom: 10px; }
+
+        .contact-container {
+            max-width: 1100px;
+            margin: 0 auto 80px;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 50px;
+            padding: 0 5%;
+        }
+
+        /* --- Sidebar Info --- */
+        .contact-info h2 { color: var(--primary-green); margin-bottom: 25px; }
+        .info-item { margin-bottom: 30px; }
+        .info-item h4 { text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #888; margin-bottom: 5px; }
+        .info-item p { font-size: 1.1rem; font-weight: 500; }
+
+        /* --- Form Styling --- */
+        .contact-form {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary-green); }
+
+        .submit-btn {
+            background: var(--primary-green);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* Success Message Area */
+        #success-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        #success-message h3 { color: var(--primary-green); margin-bottom: 10px; }
+
+        /* --- Mobile Navigation --- */
+        @media screen and (max-width: 992px) {
+            .contact-container { grid-template-columns: 1fr; }
+            .nav-links {
+                position: fixed;
+                right: 0; top: 0;
+                height: 100vh; width: 100%;
+                background-color: white;
+                flex-direction: column;
+                justify-content: center;
+                transform: translateX(100%);
+                z-index: 1050;
+                transition: var(--transition);
+            }
+            .nav-links li { margin: 12px 0; opacity: 0; }
+            .nav-links a { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); display: block; padding: 10px; text-align: center; text-decoration: none;}
+            .nav-links a.quote-btn { background: var(--primary-green); color: white !important; margin: 20px auto; width: 80%; max-width: 300px; font-size: 1.2rem; }
+            .hamburger { display: block; }
+            .nav-active { transform: translateX(0%); }
+            .nav-active li { animation: navLinkFade 0.5s ease forwards; }
+            .toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+            .toggle .line2 { opacity: 0; }
+            .toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+        }
+
+        @keyframes navLinkFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer { background: #1a1a1a; color: #999; padding: 40px 5%; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">MATALICK INC.</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="sustainability.html">Sustainability</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+            <li><a href="request-quote.html" class="quote-btn">Get a Quote</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </header>
+
+    <div class="contact-hero">
+        <h1>Get in Touch</h1>
+        <p>Whether you have a question about our fiber or our mill, our team is here to help.</p>
+    </div>
+
+    <section class="contact-container">
+        <div class="contact-info">
+            <h2>Our Headquarters</h2>
+            <div class="info-item">
+                <h4>Address</h4>
+                <p>1242 Paper Mill Road<br>Sustainability Valley, OR 97201</p>
+            </div>
+            <div class="info-item">
+                <h4>General Inquiries</h4>
+                <p>info@matalick.com</p>
+                <p>+1 (555) 123-4567</p>
+            </div>
+            <div class="info-item">
+                <h4>Hours of Operation</h4>
+                <p>Mon - Fri: 8:00 AM - 6:00 PM</p>
+                <p>Sat - Sun: Closed</p>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="contactName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="contactEmail" placeholder="example@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" placeholder="How can we help?">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="contactMsg" rows="5" placeholder="Write your message here..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+
+            <div id="success-message">
+                <h3>Message Received!</h3>
+                <p>Thank you for reaching out. An administrator will review your message shortly.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Matalick Inc. | Connecting Quality with Responsibility</p>
+    </footer>
+
+    <script>
+        const navSlide = () => {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('.nav-links');
+            const navLinks = document.querySelectorAll('.nav-links li');
+
+            hamburger.addEventListener('click', () => {
+                nav.classList.toggle('nav-active');
+                hamburger.classList.toggle('toggle');
+                navLinks.forEach((link, index) => {
+                    link.style.animation = link.style.animation ? '' : `navLinkFade 0.4s ease forwards ${index / 7 + 0.2}s`;
+                });
+                document.body.style.overflow = nav.classList.contains('nav-active') ? 'hidden' : 'initial';
+            });
+        };
+        navSlide();
+
+        // FIXED INBOX LOGIC
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const entry = {
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString(),
+                    type: 'Contact',
+                    sender: document.getElementById('contactName').value,
+                    email: document.getElementById('contactEmail').value,
+                    details: document.getElementById('contactMsg').value.substring(0, 50) + "...",
+                    assignedTo: "Unassigned",
+                    status: "Pending"
+                };
+
+                const inbox = JSON.parse(localStorage.getItem('matalickInbox')) || [];
+                inbox.unshift(entry);
+                localStorage.setItem('matalickInbox', JSON.stringify(inbox));
+
+                // Hide form and show success message
+                this.style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request a Quote | Matalick Inc.</title>
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --paper-white: #fcfaf7;
+            --text-dark: #333;
+            --accent-tan: #e5d3b3;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--paper-white); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+
+        /* --- Navigation (Synced with Index) --- */
+        header {
+            background: white; padding: 1rem 5%; display: flex;
+            justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000;
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary-green); text-decoration: none; z-index: 1100; }
+        
+        .nav-links { display: flex; list-style: none; align-items: center; }
+        .nav-links li { margin-left: 25px; }
+        .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--primary-green); }
+
+        .quote-btn-active {
+            background: var(--primary-green);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        .hamburger { display: none; cursor: pointer; z-index: 1100; }
+        .hamburger div { width: 25px; height: 2px; background-color: var(--primary-green); margin: 6px; transition: var(--transition); }
+
+        /* --- Quote Form Layout --- */
+        .quote-hero { padding: 60px 5% 20px; text-align: center; }
+        .quote-hero h1 { font-size: clamp(2rem, 5vw, 2.5rem); color: var(--primary-green); margin-bottom: 10px; }
+        
+        .form-container {
+            max-width: 800px; margin: 40px auto 80px; padding: 40px;
+            background: white; border-radius: 12px; border: 1px solid #eee;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: span 2; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; font-size: 1rem;
+        }
+
+        .submit-btn {
+            background: var(--primary-green); color: white; padding: 18px;
+            border: none; border-radius: 4px; font-weight: 700; cursor: pointer;
+            width: 100%; transition: 0.3s; font-size: 1.1rem;
+        }
+        .submit-btn:hover { background: #1e3d1a; transform: translateY(-2px); }
+
+        #success-msg { display: none; text-align: center; padding: 40px; }
+
+        /* --- Mobile Navigation --- */
+        @media screen and (max-width: 992px) {
+            .nav-links {
+                position: fixed; right: 0; top: 0; height: 100vh; width: 100%;
+                background-color: white; flex-direction: column; justify-content: center;
+                transform: translateX(100%); z-index: 1050; transition: var(--transition);
+            }
+            .nav-links li { margin: 12px 0; opacity: 0; }
+            .nav-links a { font-size: 1.8rem; font-weight: 700; text-align: center; }
+            .hamburger { display: block; }
+            .nav-active { transform: translateX(0%); }
+            .nav-active li { animation: navLinkFade 0.5s ease forwards; }
+            .toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+            .toggle .line2 { opacity: 0; }
+            .toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+
+        @keyframes navLinkFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer { background: #1a1a1a; color: #999; padding: 40px 5%; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">MATALICK INC.</a>
+        
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="sustainability.html">Sustainability</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="request-quote.html" class="quote-btn-active">Get a Quote</a></li>
+        </ul>
+
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </header>
+
+    <div class="quote-hero">
+        <h1>Wholesale Quote Request</h1>
+        <p>Submit your requirements and our commercial team will contact you.</p>
+    </div>
+
+    <div class="form-container">
+        <form id="quoteForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" id="qCompany" placeholder="Your Business" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Name</label>
+                    <input type="text" id="qSender" placeholder="First & Last Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="qEmail" placeholder="email@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="qPhone" placeholder="(555) 000-0000">
+                </div>
+                <div class="form-group">
+                    <label>Select Product</label>
+                    <select id="qProduct" required>
+                        <option value="">Choose paper type...</option>
+                        <option>EverGreen Recycled Bond</option>
+                        <option>Matalick Glossy Stock</option>
+                        <option>Eco-Pulp Uncoated</option>
+                        <option>Industrial Packaging Grade</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estimated Volume</label>
+                    <input type="text" id="qVolume" placeholder="e.g. 5 Tons Monthly" required>
+                </div>
+                <div class="form-group full-width">
+                    <label>Additional Requirements</label>
+                    <textarea id="qNotes" rows="4" placeholder="Special sizing, custom brightness..."></textarea>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Submit Request</button>
+        </form>
+
+        <div id="success-msg">
+            <h2 style="color: var(--primary-green);">Request Received</h2>
+            <p>Your inquiry has been sent to our commercial sales division.</p>
+            <br>
+            <a href="index.html" style="color: var(--primary-green); font-weight: bold; text-decoration: none;">Return to Homepage</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Matalick Inc. | Wholesale Fiber Solutions</p>
+    </footer>
+
+    <script>
+        // --- Navigation Logic ---
+        const navSlide = () => {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('.nav-links');
+            const navLinks = document.querySelectorAll('.nav-links li');
+
+            hamburger.addEventListener('click', () => {
+                nav.classList.toggle('nav-active');
+                hamburger.classList.toggle('toggle');
+                navLinks.forEach((link, index) => {
+                    link.style.animation = link.style.animation ? '' : `navLinkFade 0.4s ease forwards ${index / 7 + 0.2}s`;
+                });
+                document.body.style.overflow = nav.classList.contains('nav-active') ? 'hidden' : 'initial';
+            });
+        };
+        navSlide();
+
+        // --- Form Logic ---
+        const quoteForm = document.getElementById('quoteForm');
+        if (quoteForm) {
+            quoteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const entry = {
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString(),
+                    type: 'Quote',
+                    sender: document.getElementById('qCompany').value,
+                    email: document.getElementById('qEmail').value,
+                    details: document.getElementById('qProduct').value + " (" + document.getElementById('qVolume').value + ")",
+                    assignedTo: "Unassigned",
+                    status: "Pending"
+                };
+
+                const inbox = JSON.parse(localStorage.getItem('matalickInbox')) || [];
+                inbox.unshift(entry);
+                localStorage.setItem('matalickInbox', JSON.stringify(inbox));
+
+                this.style.display = 'none';
+                document.getElementById('success-msg').style.display = 'block';
+                window.scrollTo(0,0);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Admin | Matalick Inc.</title>
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --dark-sidebar: #1a1a1a;
+            --bg-gray: #f4f7f6;
+            --text-main: #333;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-gray); display: flex; color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px; background: var(--dark-sidebar); height: 100vh;
+            color: white; padding: 30px 20px; position: fixed;
+            transition: var(--transition); z-index: 1000;
+        }
+        .sidebar h2 { color: var(--primary-green); font-size: 1.2rem; margin-bottom: 5px; letter-spacing: 1px; }
+        .back-link { display: block; color: #888; text-decoration: none; font-size: 0.8rem; margin-bottom: 30px; }
+
+        .nav-item { padding: 12px 15px; margin-bottom: 10px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-active { background: var(--primary-green); font-weight: bold; }
+
+        /* --- Main Content --- */
+        .main-content { margin-left: 260px; width: calc(100% - 260px); padding: 40px; }
+        
+        .admin-header {
+            background: white; padding: 20px 30px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px;
+        }
+
+        /* --- Table Styling --- */
+        .table-container { background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #fafafa; padding: 15px; text-align: left; color: #888; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #eee; }
+        td { padding: 18px 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+
+        .type-label { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .type-quote { background: #fff3e0; color: #ef6c00; }
+        .type-contact { background: #e3f2fd; color: #1565c0; }
+
+        .status-pill { 
+            display: inline-block; margin-top: 8px; padding: 2px 10px; 
+            background: #e8f5e9; color: var(--primary-green); 
+            border-radius: 12px; font-size: 0.75rem; font-weight: 700;
+        }
+
+        .assign-select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; cursor: pointer; }
+
+        /* --- CUSTOM MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: none;
+            justify-content: center; align-items: center; z-index: 3000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal {
+            background: white; padding: 30px; border-radius: 12px;
+            width: 90%; max-width: 450px; text-align: center;
+            transform: translateY(-20px); transition: var(--transition);
+        }
+
+        .modal.show { transform: translateY(0); }
+
+        .modal h3 { color: var(--primary-green); margin-bottom: 15px; }
+        .modal p { color: #666; margin-bottom: 25px; line-height: 1.5; }
+
+        .modal-btns { display: flex; gap: 15px; justify-content: center; }
+        .btn { padding: 12px 25px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-confirm { background: var(--primary-green); color: white; }
+        .btn-cancel { background: #eee; color: #666; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* --- Mobile Toggle --- */
+        .mobile-toggle { display: none; position: fixed; bottom: 20px; right: 20px; background: var(--primary-green); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; z-index: 4000; }
+
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; padding: 20px; }
+            .mobile-toggle { display: block; }
+            thead { display: none; }
+            tr { display: block; margin-bottom: 20px; border: 1px solid #eee; background: white; border-radius: 8px; }
+            td { display: block; text-align: right; padding-left: 50%; position: relative; }
+            td::before { content: attr(data-label); position: absolute; left: 15px; font-weight: bold; color: #888; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('active')">☰</button>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="confirmModal">
+            <h3>Assign Representative?</h3>
+            <p id="modalText">Are you sure you want to assign this request?</p>
+            <div class="modal-btns">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-confirm" id="confirmBtn">Confirm Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar" id="sidebar">
+        <h2>MATALICK ADMIN</h2>
+        <a href="index.html" class="back-link">← Back to Site Index</a>
+        <div class="nav-item nav-active">Master Inbox</div>
+        <div class="nav-item">Staff Management</div>
+        <div class="nav-item">Product Inventory</div>
+    </nav>
+
+    <main class="main-content">
+        <div class="admin-header">
+            <h1>Administrator Dashboard</h1>
+            <button class="btn btn-cancel" onclick="resetInbox()" style="color: #ff4444; border: 1px solid #ff4444;">Wipe Inbox</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Received</th>
+                        <th>Sender</th>
+                        <th>Details & Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="inboxBody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const staffTeam = [
+            { name: "Rachel", role: "Staffing", task: "Reviewing Application" },
+            { name: "Alex Nallom", role: "Sales", task: "Drafting Quote" },
+            { name: "Operations Manager", role: "Logistics", task: "Checking Stock" }
+        ];
+
+        let pendingAssignment = null;
+
+        function loadInbox() {
+            const tableBody = document.getElementById('inboxBody');
+            const inboxData = JSON.parse(localStorage.getItem('matalickInbox')) || [];
+
+            tableBody.innerHTML = inboxData.map(item => {
+                const staff = staffTeam.find(s => s.name === item.assignedTo);
+                return `
+                <tr>
+                    <td data-label="Type"><span class="type-label ${item.type === 'Quote' ? 'type-quote' : 'type-contact'}">${item.type}</span></td>
+                    <td data-label="Received">${item.date}</td>
+                    <td data-label="Sender"><strong>${item.sender}</strong><br><small>${item.email}</small></td>
+                    <td data-label="Details">
+                        ${item.details}
+                        ${item.assignedTo !== 'Unassigned' ? `<br><span class="status-pill">● ${item.assignedTo}: ${staff ? staff.task : 'Active'}</span>` : ''}
+                    </td>
+                    <td data-label="Action">
+                        <select class="assign-select" onchange="openModal(${item.id}, this.value)">
+                            <option value="Unassigned" ${item.assignedTo === 'Unassigned' ? 'selected' : ''}>— Assign To —</option>
+                            ${staffTeam.map(s => `<option value="${s.name}" ${item.assignedTo === s.name ? 'selected' : ''}>${s.name}</option>`).join('')}
+                        </select>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function openModal(id, name) {
+            if (name === "Unassigned") return updateStatus(id, name);
+            
+            pendingAssignment = { id, name };
+            document.getElementById('modalText').innerText = `Assign this request to ${name}? They will be notified to begin "${staffTeam.find(s => s.name === name).task}" immediately.`;
+            document.getElementById('modalOverlay').style.display = 'flex';
+            setTimeout(() => document.getElementById('confirmModal').classList.add('show'), 10);
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+            setTimeout(() => {
+                document.getElementById('modalOverlay').style.display = 'none';
+                loadInbox(); // Reset select if cancelled
+            }, 300);
+        }
+
+        document.getElementById('confirmBtn').onclick = () => {
+            if (pendingAssignment) {
+                updateStatus(pendingAssignment.id, pendingAssignment.name);
+                closeModal();
+            }
+        };
+
+        function updateStatus(id, name) {
+            let inbox = JSON.parse(localStorage.getItem('matalickInbox'));
+            inbox = inbox.map(item => item.id === id ? { ...item, assignedTo: name } : item);
+            localStorage.setItem('matalickInbox', JSON.stringify(inbox));
+            loadInbox();
+        }
+
+        function resetInbox() {
+            if(confirm("Clear all data?")) { localStorage.removeItem('matalickInbox'); loadInbox(); }
+        }
+
+        window.onload = loadInbox;
+    </script>
+</body>
+</html>

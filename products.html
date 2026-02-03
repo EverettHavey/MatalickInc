@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | Matalick Inc.</title>
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --paper-white: #fcfaf7;
+            --text-dark: #333;
+            --accent-tan: #e5d3b3;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--paper-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Navigation --- */
+        header {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            text-decoration: none;
+            z-index: 1100;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li { margin-left: 25px; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-green); }
+
+        .quote-btn {
+            background: var(--primary-green);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        .hamburger { display: none; cursor: pointer; z-index: 1100; }
+        .hamburger div { width: 25px; height: 2px; background-color: var(--primary-green); margin: 6px; transition: var(--transition); }
+
+        /* --- Page Layout --- */
+        .page-header {
+            padding: 60px 5% 40px;
+            background: #fff;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .page-header h1 { font-size: 2.5rem; color: var(--primary-green); margin-bottom: 10px; }
+
+        /* --- Filter System --- */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 30px 5%;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 70px; /* Sits below header */
+            background: var(--paper-white);
+            z-index: 900;
+        }
+
+        .filter-btn {
+            padding: 8px 22px;
+            border: 2px solid var(--primary-green);
+            background: transparent;
+            color: var(--primary-green);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        /* --- Grid & Cards --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 5% 80px;
+            min-height: 400px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            transition: var(--transition);
+            display: block; /* Default visible */
+        }
+
+        .product-card.hidden {
+            display: none;
+        }
+
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+        .product-img {
+            height: 180px;
+            background: #f0efeb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-info { padding: 25px; }
+        .product-info span { font-size: 0.75rem; font-weight: 800; color: var(--primary-green); text-transform: uppercase; }
+        .product-info h3 { margin: 5px 0 10px; font-size: 1.25rem; }
+        .product-info p { font-size: 0.9rem; color: #666; margin-bottom: 20px; height: 45px; overflow: hidden; }
+
+        .view-btn {
+            text-decoration: none;
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        /* --- Mobile Navigation (Matches Index) --- */
+        @media screen and (max-width: 992px) {
+            .nav-links {
+                position: fixed;
+                right: 0; top: 0;
+                height: 100vh; width: 100%;
+                background-color: white;
+                flex-direction: column;
+                justify-content: center;
+                transform: translateX(100%);
+                z-index: 1050;
+                padding: 2rem;
+            }
+            .nav-links li { margin: 12px 0; opacity: 0; }
+            .nav-links a { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); display: block; padding: 10px; text-align: center; }
+            .nav-links a.quote-btn { background: var(--primary-green); color: white !important; margin: 20px auto; width: 100%; max-width: 300px; font-size: 1.2rem; }
+            .hamburger { display: block; }
+            .nav-active { transform: translateX(0%); }
+            .nav-active li { animation: navLinkFade 0.5s ease forwards; }
+            .toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+            .toggle .line2 { opacity: 0; }
+            .toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+        }
+
+        @keyframes navLinkFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer { background: #1a1a1a; color: #777; padding: 40px 5%; text-align: center; font-size: 0.85rem; }
+        footer a { color: #aaa; text-decoration: none; margin: 0 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">MATALICK INC.</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html" class="active">Products</a></li>
+            <li><a href="sustainability.html">Sustainability</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="request-quote.html" class="quote-btn">Get a Quote</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1>Product Catalog</h1>
+        <p>Premium quality for professional results.</p>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="coated">Coated</button>
+        <button class="filter-btn" data-filter="uncoated">Uncoated</button>
+        <button class="filter-btn" data-filter="recycled">Recycled</button>
+        <button class="filter-btn" data-filter="specialty">Specialty</button>
+    </div>
+
+    <section class="product-grid" id="product-grid">
+        
+        <div class="product-card" data-category="coated">
+            <div class="product-img">Gloss Finish</div>
+            <div class="product-info">
+                <span>Coated</span>
+                <h3>Matalick Gloss Pro</h3>
+                <p>High-sheen coating for vibrant colors. Ideal for photography and high-end magazines.</p>
+                <a href="product-single.html" class="view-btn">View Product →</a>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="coated">
+            <div class="product-img">Matte Silk</div>
+            <div class="product-info">
+                <span>Coated</span>
+                <h3>Satin Touch Matte</h3>
+                <p>Sophisticated silk coating that eliminates glare while maintaining crisp detail.</p>
+                <a href="product-single.html" class="view-btn">View Product →</a>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="uncoated">
+            <div class="product-img">Natural Texture</div>
+            <div class="product-info">
+                <span>Uncoated</span>
+                <h3>Loom Fiber Offset</h3>
+                <p>A natural, toothy texture that provides a premium tactile experience for stationery.</p>
+                <a href="product-single.html" class="view-btn">View Product →</a>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="uncoated">
+            <div class="product-img">High Brightness</div>
+            <div class="product-info">
+                <span>Uncoated</span>
+                <h3>Office Stream 98</h3>
+                <p>Optimized for high-speed laser and inkjet printing with instant-dry technology.</p>
+                <a href="product-single.html" class="view-btn">View Product →</a>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="recycled">
+            <div class="product-img">Eco Kraft</div>
+            <div class="product-info">
+                <span>Recycled</span>
+                <h3>EverGreen Kraft</h3>
+                <p>100% PCW recycled fiber. Strong, rustic, and completely biodegradable.</p>
+                <a href="product-single.html" class="view-btn">View Product →</a>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="specialty">
+            <div class="product-img">Linen Finish</div>
+            <div class="product-info">
+                <span>Specialty</span>
+                <h3>Executive Linen</h3>
+                <p>Classic cross-hatch texture designed for business cards and corporate identity.</p>
+                <a href="product-single.html" class="view-btn">View Product →</a>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="specialty">
+            <div class="product-img">Heavy Cardstock</div>
+            <div class="product-info">
+                <span>Specialty</span>
+                <h3>Titanium Board</h3>
+                <p>Ultra-heavyweight 130lb stock for packaging prototypes and premium invitations.</p>
+                <a href="product-single.html" class="view-btn">View Product →</a>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Matalick Inc. | <a href="aboutus.html">About</a> | <a href="request-quote.html">Quotes</a> | <a href="contact.html">Contact</a></p>
+    </footer>
+
+    <script>
+        // 1. Navigation Logic
+        const navSlide = () => {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('.nav-links');
+            const navLinks = document.querySelectorAll('.nav-links li');
+
+            hamburger.addEventListener('click', () => {
+                nav.classList.toggle('nav-active');
+                hamburger.classList.toggle('toggle');
+                navLinks.forEach((link, index) => {
+                    link.style.animation = link.style.animation ? '' : `navLinkFade 0.4s ease forwards ${index / 7 + 0.2}s`;
+                });
+                document.body.style.overflow = nav.classList.contains('nav-active') ? 'hidden' : 'initial';
+            });
+        };
+
+        // 2. PRODUCT FILTER LOGIC
+        const initFilters = () => {
+            const filters = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.product-card');
+
+            filters.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button
+                    filters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const filterValue = button.getAttribute('data-filter');
+
+                    cards.forEach(card => {
+                        if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        };
+
+        navSlide();
+        initFilters();
+    </script>
+</body>
+</html>
